@@ -91,6 +91,16 @@ export default function Portfolio() {
     }
   };
 
+  const handleDownloadCV = () => {
+    // Create a link element
+    const link = document.createElement('a');
+    link.href = '/mohamad-chalhoub-cv.pdf';
+    link.download = 'Mohamad_Chalhoub_CV.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="min-h-screen bg-black text-gray-100">
       {/* Navigation */}
@@ -180,6 +190,7 @@ export default function Portfolio() {
               View My Work
             </Button>
             <Button
+              onClick={handleDownloadCV}
               variant="outline"
               className="border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black px-8 py-3 bg-transparent"
             >
