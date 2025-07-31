@@ -91,14 +91,46 @@ export default function Portfolio() {
     }
   };
 
-  const handleDownloadCV = () => {
-    // Create a link element
-    const link = document.createElement('a');
-    link.href = '/mohamad-chalhoub-cv.pdf';
-    link.download = 'Mohamad_Chalhoub_CV.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownloadCV = async () => {
+    // Get the base URL for production
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? window.location.origin 
+      : '';
+    
+    const cvUrl = `${baseUrl}/mohamad-chalhoub-cv.pdf`;
+    
+    try {
+      // First check if the file exists
+      const response = await fetch(cvUrl, { method: 'HEAD' });
+      
+      if (!response.ok) {
+        throw new Error('CV file not found');
+      }
+      
+      // Method 1: Try direct download
+      const link = document.createElement('a');
+      link.href = cvUrl;
+      link.download = 'Mohamad_Chalhoub_CV.pdf';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      
+      // Add to DOM, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Download failed, trying fallback:', error);
+      
+      // Method 2: Fallback - open in new tab
+      try {
+        window.open(cvUrl, '_blank');
+      } catch (fallbackError) {
+        console.error('Fallback also failed:', fallbackError);
+        
+        // Method 3: Final fallback - redirect
+        window.location.href = cvUrl;
+      }
+    }
   };
 
   return (
