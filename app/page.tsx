@@ -27,11 +27,11 @@ import { useState, useEffect } from "react";
 export default function Portfolio() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    subject: '',
-    message: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    subject: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -55,37 +55,41 @@ export default function Portfolio() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       // Create mailto link with form data
-      const mailtoLink = `mailto:chalhoubmohd@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
+      const mailtoLink = `mailto:chalhoubmohd@gmail.com?subject=${encodeURIComponent(
+        formData.subject
+      )}&body=${encodeURIComponent(
         `Name: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
       )}`;
-      
+
       // Open default email client
       window.location.href = mailtoLink;
-      
+
       // Reset form
       setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        subject: '',
-        message: ''
+        firstName: "",
+        lastName: "",
+        email: "",
+        subject: "",
+        message: "",
       });
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error("Error sending email:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -93,40 +97,39 @@ export default function Portfolio() {
 
   const handleDownloadCV = async () => {
     // Get the base URL for production
-    const baseUrl = process.env.NODE_ENV === 'production' 
-      ? window.location.origin 
-      : '';
-    
+    const baseUrl =
+      process.env.NODE_ENV === "production" ? window.location.origin : "";
+
     const cvUrl = `${baseUrl}/mohamad-chalhoub-cv.pdf`;
-    
+
     try {
       // First check if the file exists
-      const response = await fetch(cvUrl, { method: 'HEAD' });
-      
+      const response = await fetch(cvUrl, { method: "HEAD" });
+
       if (!response.ok) {
-        throw new Error('CV file not found');
+        throw new Error("CV file not found");
       }
-      
+
       // Method 1: Try direct download
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = cvUrl;
-      link.download = 'Mohamad_Chalhoub_CV.pdf';
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      
+      link.download = "Mohamad_Chalhoub_CV.pdf";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+
       // Add to DOM, click, and remove
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error('Download failed, trying fallback:', error);
-      
+      console.error("Download failed, trying fallback:", error);
+
       // Method 2: Fallback - open in new tab
       try {
-        window.open(cvUrl, '_blank');
+        window.open(cvUrl, "_blank");
       } catch (fallbackError) {
-        console.error('Fallback also failed:', fallbackError);
-        
+        console.error("Fallback also failed:", fallbackError);
+
         // Method 3: Final fallback - redirect
         window.location.href = cvUrl;
       }
@@ -640,7 +643,14 @@ export default function Portfolio() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Email</p>
-                    <p className="text-cyan-400">chalhoubmohd@gmail.com</p>
+                    <a
+                      href="mailto:chalhoubmohd@gmail.com"
+                      className="text-cyan-400 hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      chalhoubmohd@gmail.com
+                    </a>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -649,9 +659,14 @@ export default function Portfolio() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">GitHub</p>
-                    <p className="text-purple-400">
+                    <a
+                      href="https://github.com/mohamadchalhoub"
+                      className="text-purple-400 hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       github.com/mohamadchalhoub
-                    </p>
+                    </a>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -660,9 +675,14 @@ export default function Portfolio() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">LinkedIn</p>
-                    <p className="text-green-400">
+                    <a
+                      href="https://www.linkedin.com/in/mohamad-chalhoub-91851126b"
+                      className="text-green-400 hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       linkedin.com/in/mohamadchalhoub
-                    </p>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -726,7 +746,7 @@ export default function Portfolio() {
                     className="w-full bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white disabled:opacity-50"
                   >
                     <Mail className="mr-2 h-4 w-4" />
-                    {isSubmitting ? 'Sending...' : 'Send Email'}
+                    {isSubmitting ? "Sending..." : "Send Email"}
                   </Button>
                 </form>
               </CardContent>
