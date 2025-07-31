@@ -222,7 +222,7 @@ export default function Portfolio() {
               onClick={() => scrollToSection("projects")}
               className="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white px-8 py-3"
             >
-              View My Work
+              View My Skills
             </Button>
             <Button
               onClick={handleDownloadCV}
@@ -703,7 +703,7 @@ export default function Portfolio() {
                       onChange={handleInputChange}
                       placeholder="First Name"
                       required
-                      className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
+                      className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400 px-4 py-3 rounded-md"
                     />
                     <Input
                       name="lastName"
@@ -711,7 +711,7 @@ export default function Portfolio() {
                       onChange={handleInputChange}
                       placeholder="Last Name"
                       required
-                      className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
+                      className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400 px-4 py-3 rounded-md"
                     />
                   </div>
                   <Input
@@ -721,7 +721,7 @@ export default function Portfolio() {
                     placeholder="Email"
                     type="email"
                     required
-                    className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
+                    className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400 px-4 py-3 rounded-md mt-4"
                   />
                   <Input
                     name="subject"
@@ -729,7 +729,7 @@ export default function Portfolio() {
                     onChange={handleInputChange}
                     placeholder="Subject"
                     required
-                    className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
+                    className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400 px-4 py-3 rounded-md mt-4"
                   />
                   <Textarea
                     name="message"
@@ -738,12 +738,12 @@ export default function Portfolio() {
                     placeholder="Your message..."
                     rows={4}
                     required
-                    className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
+                    className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400 px-4 py-3 rounded-md mt-4"
                   />
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white disabled:opacity-50"
+                    className="w-full bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white disabled:opacity-50 mt-4"
                   >
                     <Mail className="mr-2 h-4 w-4" />
                     {isSubmitting ? "Sending..." : "Send Email"}
