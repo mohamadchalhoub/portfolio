@@ -1,45 +1,105 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Github, Linkedin, Mail, Code, Database, Globe, Terminal, ChevronUp } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Github,
+  Linkedin,
+  Mail,
+  Code,
+  Database,
+  Globe,
+  Terminal,
+  ChevronUp,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function Portfolio() {
-  const [showScrollTop, setShowScrollTop] = useState(false)
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400)
-    }
+      setShowScrollTop(window.scrollY > 400);
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
+    const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
+      element.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      // Create mailto link with form data
+      const mailtoLink = `mailto:chalhoubmohd@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
+        `Name: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+      )}`;
+      
+      // Open default email client
+      window.location.href = mailtoLink;
+      
+      // Reset form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error('Error sending email:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-gray-100">
-      <div className="test-css">CSS TEST - If you see this in red, CSS is working!</div>
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-cyan-500/20">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="text-2xl font-bold text-cyan-400">{"<Portfolio />"}</div>
+            <div className="text-2xl font-bold text-cyan-400">
+              {"<Portfolio />"}
+            </div>
             <div className="hidden md:flex space-x-8">
               <button
                 onClick={() => scrollToSection("home")}
@@ -81,7 +141,10 @@ export default function Portfolio() {
       )}
 
       {/* Hero Section */}
-      <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      <section
+        id="home"
+        className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      >
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-cyan-900/20"></div>
         <div className="absolute inset-0">
           <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
@@ -106,7 +169,8 @@ export default function Portfolio() {
             Mohamad Chalhoub
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Full Stack Web Developer & Cybersecurity Specialist focused on building secure, scalable applications
+            Full Stack Web Developer & Cybersecurity Specialist focused on
+            building secure, scalable applications
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -126,21 +190,32 @@ export default function Portfolio() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 bg-gradient-to-b from-black to-gray-900">
+      <section
+        id="about"
+        className="py-20 bg-gradient-to-b from-black to-gray-900"
+      >
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-cyan-400">{"<About />"}</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-cyan-400">
+            {"<About />"}
+          </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h3 className="text-2xl font-bold mb-6 text-purple-400">Full Stack Developer & Security Expert</h3>
+              <h3 className="text-2xl font-bold mb-6 text-purple-400">
+                Full Stack Developer & Security Expert
+              </h3>
               <p className="text-gray-300 mb-6 leading-relaxed">
-                I'm a passionate full-stack web developer and cybersecurity specialist with extensive experience in
-                building modern, secure web applications. I specialize in React, Next.js, Node.js, and web application
-                security, creating seamless user experiences with robust security measures and backend solutions.
+                I'm a passionate full-stack web developer and cybersecurity
+                specialist with extensive experience in building modern, secure
+                web applications. I specialize in React, Next.js, Node.js, and
+                web application security, creating seamless user experiences
+                with robust security measures and backend solutions.
               </p>
               <p className="text-gray-300 mb-8 leading-relaxed">
-                My unique combination of development and security expertise allows me to build applications that are not
-                only functional and user-friendly but also secure from the ground up. I understand both how to build
-                applications and how to protect them from modern cyber threats.
+                My unique combination of development and security expertise
+                allows me to build applications that are not only functional and
+                user-friendly but also secure from the ground up. I understand
+                both how to build applications and how to protect them from
+                modern cyber threats.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center space-x-3">
@@ -169,20 +244,36 @@ export default function Portfolio() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <h4 className="text-purple-400 font-semibold mb-2">Frontend</h4>
-                    <p className="text-gray-300 text-sm">React, Next.js, JavaScript, HTML5, CSS3</p>
+                    <h4 className="text-purple-400 font-semibold mb-2">
+                      Frontend
+                    </h4>
+                    <p className="text-gray-300 text-sm">
+                      React, Next.js, JavaScript, HTML5, CSS3
+                    </p>
                   </div>
                   <div>
-                    <h4 className="text-purple-400 font-semibold mb-2">Backend</h4>
-                    <p className="text-gray-300 text-sm">Node.js, Express.js, RESTful APIs</p>
+                    <h4 className="text-purple-400 font-semibold mb-2">
+                      Backend
+                    </h4>
+                    <p className="text-gray-300 text-sm">
+                      Node.js, Express.js, RESTful APIs
+                    </p>
                   </div>
                   <div>
-                    <h4 className="text-purple-400 font-semibold mb-2">Databases</h4>
-                    <p className="text-gray-300 text-sm">MySQL, MongoDB, Database Design</p>
+                    <h4 className="text-purple-400 font-semibold mb-2">
+                      Databases
+                    </h4>
+                    <p className="text-gray-300 text-sm">
+                      MySQL, MongoDB, Database Design
+                    </p>
                   </div>
                   <div>
-                    <h4 className="text-purple-400 font-semibold mb-2">Security</h4>
-                    <p className="text-gray-300 text-sm">Web App Security, Penetration Testing</p>
+                    <h4 className="text-purple-400 font-semibold mb-2">
+                      Security
+                    </h4>
+                    <p className="text-gray-300 text-sm">
+                      Web App Security, Penetration Testing
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -206,7 +297,9 @@ export default function Portfolio() {
                 <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Code className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-cyan-400">Frontend Development</CardTitle>
+                <CardTitle className="text-cyan-400">
+                  Frontend Development
+                </CardTitle>
                 <CardDescription className="text-gray-400">
                   Building responsive and interactive user interfaces
                 </CardDescription>
@@ -247,7 +340,9 @@ export default function Portfolio() {
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Terminal className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-purple-400">Backend Development</CardTitle>
+                <CardTitle className="text-purple-400">
+                  Backend Development
+                </CardTitle>
                 <CardDescription className="text-gray-400">
                   Creating robust server-side applications and APIs
                 </CardDescription>
@@ -288,7 +383,9 @@ export default function Portfolio() {
                 <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Database className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-green-400">Database Management</CardTitle>
+                <CardTitle className="text-green-400">
+                  Database Management
+                </CardTitle>
                 <CardDescription className="text-gray-400">
                   Designing and managing efficient data storage solutions
                 </CardDescription>
@@ -327,7 +424,12 @@ export default function Portfolio() {
             <Card className="bg-gray-900/50 border-red-500/30 hover:border-red-500/60 transition-all duration-300 group">
               <CardHeader>
                 <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-8 h-8 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -362,7 +464,9 @@ export default function Portfolio() {
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Vulnerability Assessment</span>
+                    <span className="text-gray-300">
+                      Vulnerability Assessment
+                    </span>
                     <div className="w-24 bg-gray-700 rounded-full h-2">
                       <div className="bg-gradient-to-r from-red-400 to-orange-400 h-2 rounded-full w-3/4"></div>
                     </div>
@@ -374,7 +478,9 @@ export default function Portfolio() {
 
           {/* Learning Journey */}
           <div className="max-w-4xl mx-auto">
-            <h3 className="text-3xl font-bold text-center mb-12 text-purple-400">Current Learning Journey</h3>
+            <h3 className="text-3xl font-bold text-center mb-12 text-purple-400">
+              Current Learning Journey
+            </h3>
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="bg-gray-900/50 border-cyan-500/30">
                 <CardHeader>
@@ -386,7 +492,9 @@ export default function Portfolio() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                    <span className="text-gray-300">Advanced React Patterns</span>
+                    <span className="text-gray-300">
+                      Advanced React Patterns
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse delay-200"></div>
@@ -394,11 +502,15 @@ export default function Portfolio() {
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse delay-400"></div>
-                    <span className="text-gray-300">Advanced Web App Security</span>
+                    <span className="text-gray-300">
+                      Advanced Web App Security
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse delay-600"></div>
-                    <span className="text-gray-300">Security Automation Tools</span>
+                    <span className="text-gray-300">
+                      Security Automation Tools
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -413,11 +525,15 @@ export default function Portfolio() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
-                    <span className="text-gray-300">Cloud Security (AWS/Azure)</span>
+                    <span className="text-gray-300">
+                      Cloud Security (AWS/Azure)
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                    <span className="text-gray-300">Security Certifications (CEH/CISSP)</span>
+                    <span className="text-gray-300">
+                      Security Certifications (CEH/CISSP)
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-red-400 rounded-full"></div>
@@ -425,7 +541,9 @@ export default function Portfolio() {
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span className="text-gray-300">AI/ML Security Applications</span>
+                    <span className="text-gray-300">
+                      AI/ML Security Applications
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -434,10 +552,13 @@ export default function Portfolio() {
 
           {/* Call to Action */}
           <div className="text-center mt-16">
-            <h3 className="text-2xl font-bold mb-4 text-cyan-400">Ready to Build Secure Applications?</h3>
+            <h3 className="text-2xl font-bold mb-4 text-cyan-400">
+              Ready to Build Secure Applications?
+            </h3>
             <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-              I combine full-stack development expertise with cybersecurity knowledge to create applications that are
-              both powerful and secure. Let's build something that users can trust!
+              I combine full-stack development expertise with cybersecurity
+              knowledge to create applications that are both powerful and
+              secure. Let's build something that users can trust!
             </p>
             <Button
               onClick={() => scrollToSection("contact")}
@@ -450,15 +571,24 @@ export default function Portfolio() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 bg-gradient-to-b from-black to-gray-900">
+      <section
+        id="contact"
+        className="py-20 bg-gradient-to-b from-black to-gray-900"
+      >
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-cyan-400">{"<Contact />"}</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-cyan-400">
+            {"<Contact />"}
+          </h2>
           <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
             <div>
-              <h3 className="text-2xl font-bold mb-6 text-purple-400">Let's Connect</h3>
+              <h3 className="text-2xl font-bold mb-6 text-purple-400">
+                Let's Connect
+              </h3>
               <p className="text-gray-300 mb-8 leading-relaxed">
-                Ready to bring your next web project to life? I'm always interested in discussing new opportunities,
-                innovative projects, and creative collaborations. Let's build something amazing together!
+                Ready to bring your next web project to life? I'm always
+                interested in discussing new opportunities, innovative projects,
+                and creative collaborations. Let's build something amazing
+                together!
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
@@ -476,7 +606,9 @@ export default function Portfolio() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">GitHub</p>
-                    <p className="text-purple-400">github.com/mohamadchalhoub</p>
+                    <p className="text-purple-400">
+                      github.com/mohamadchalhoub
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -485,7 +617,9 @@ export default function Portfolio() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">LinkedIn</p>
-                    <p className="text-green-400">linkedin.com/in/mohamadchalhoub</p>
+                    <p className="text-green-400">
+                      linkedin.com/in/mohamadchalhoub
+                    </p>
                   </div>
                 </div>
               </div>
@@ -498,33 +632,60 @@ export default function Portfolio() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      placeholder="First Name"
+                      required
+                      className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
+                    />
+                    <Input
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      placeholder="Last Name"
+                      required
+                      className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
+                    />
+                  </div>
                   <Input
-                    placeholder="First Name"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Email"
+                    type="email"
+                    required
                     className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
                   />
                   <Input
-                    placeholder="Last Name"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    placeholder="Subject"
+                    required
                     className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
                   />
-                </div>
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
-                />
-                <Input
-                  placeholder="Subject"
-                  className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
-                />
-                <Textarea
-                  placeholder="Your message..."
-                  rows={4}
-                  className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
-                />
-                <Button className="w-full bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white">
-                  Send Message
-                </Button>
+                  <Textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="Your message..."
+                    rows={4}
+                    required
+                    className="bg-black/50 border-gray-700 text-gray-100 focus:border-cyan-400"
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white disabled:opacity-50"
+                  >
+                    <Mail className="mr-2 h-4 w-4" />
+                    {isSubmitting ? 'Sending...' : 'Send Email'}
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </div>
@@ -535,12 +696,20 @@ export default function Portfolio() {
       <footer className="py-8 bg-black border-t border-cyan-500/20">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-gray-400 mb-4 md:mb-0">© 2024 Mohamad Chalhoub. All rights reserved.</div>
+            <div className="text-gray-400 mb-4 md:mb-0">
+              © 2024 Mohamad Chalhoub. All rights reserved.
+            </div>
             <div className="flex space-x-6">
-              <Link href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              <Link
+                href="#"
+                className="text-gray-400 hover:text-cyan-400 transition-colors"
+              >
                 <Github className="w-5 h-5" />
               </Link>
-              <Link href="#" className="text-gray-400 hover:text-purple-400 transition-colors">
+              <Link
+                href="#"
+                className="text-gray-400 hover:text-purple-400 transition-colors"
+              >
                 <Linkedin className="w-5 h-5" />
               </Link>
               <Link
@@ -554,5 +723,5 @@ export default function Portfolio() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
