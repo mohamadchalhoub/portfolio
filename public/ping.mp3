@@ -1,0 +1,28 @@
+# IMPORTANT: This file needs to be replaced with an actual MP3 file!
+
+# To fix the sound issue, you need to:
+
+# OPTION 1: Download a free ping sound
+# - Go to https://freesound.org/ and search for "ping" or "notification"
+# - Download a short MP3 file (1-2 seconds)
+# - Rename it to "ping.mp3" and replace this file
+
+# OPTION 2: Create a simple beep
+# - Use online tools like https://www.soundjay.com/beep-sounds-1.html
+# - Or https://www.zapsplat.com/sound-effect-category/beeps/
+# - Download and rename to "ping.mp3"
+
+# OPTION 3: Use browser-compatible audio
+# The chatbot now supports multiple audio formats:
+# - ping.mp3 (MP3)
+# - ping.wav (WAV) 
+# - ping.ogg (OGG)
+
+# RECOMMENDED: Use a short, pleasant notification sound
+# - Duration: 0.5-2 seconds
+# - Format: MP3, WAV, or OGG
+# - Volume: Moderate (not too loud)
+# - Tone: Pleasant chime or beep
+
+# Once you add the audio file, the chatbot will play a sound
+# every time the AI responds to a message!
