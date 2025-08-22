@@ -26,6 +26,7 @@ import { useState, useEffect } from "react";
 
 export default function Portfolio() {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -53,6 +54,14 @@ export default function Portfolio() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
   };
 
   const handleInputChange = (
@@ -145,6 +154,8 @@ export default function Portfolio() {
             <div className="text-2xl font-bold text-cyan-400">
               {"<Portfolio />"}
             </div>
+            
+            {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8">
               <button
                 onClick={() => scrollToSection("home")}
@@ -159,14 +170,69 @@ export default function Portfolio() {
                 About
               </button>
               <button
-                onClick={() => scrollToSection("projects")}
+                onClick={() => scrollToSection("work")}
                 className="text-gray-300 hover:text-cyan-400 transition-colors"
               >
-                Skills
+                Work
               </button>
               <button
                 onClick={() => scrollToSection("contact")}
                 className="text-gray-300 hover:text-cyan-400 transition-colors"
+              >
+                Contact
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={toggleMobileMenu}
+              className="md:hidden p-2 text-gray-300 hover:text-cyan-400 transition-colors"
+              aria-label="Toggle mobile menu"
+            >
+              <div className="w-6 h-6 flex flex-col justify-center items-center">
+                <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'}`}></span>
+                <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+                <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'}`}></span>
+              </div>
+            </button>
+          </div>
+
+          {/* Mobile Navigation Menu */}
+          <div className={`md:hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+            <div className="py-4 space-y-4 border-t border-cyan-500/20 mt-4">
+              <button
+                onClick={() => {
+                  scrollToSection("home");
+                  closeMobileMenu();
+                }}
+                className="block w-full text-left text-gray-300 hover:text-cyan-400 transition-colors py-2 px-4 rounded-lg hover:bg-cyan-500/10"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => {
+                  scrollToSection("about");
+                  closeMobileMenu();
+                }}
+                className="block w-full text-left text-gray-300 hover:text-cyan-400 transition-colors py-2 px-4 rounded-lg hover:bg-cyan-500/10"
+              >
+                About
+              </button>
+              <button
+                onClick={() => {
+                  scrollToSection("work");
+                  closeMobileMenu();
+                }}
+                className="block w-full text-left text-gray-300 hover:text-cyan-400 transition-colors py-2 px-4 rounded-lg hover:bg-cyan-500/10"
+              >
+                Work
+              </button>
+              <button
+                onClick={() => {
+                  scrollToSection("contact");
+                  closeMobileMenu();
+                }}
+                className="block w-full text-left text-gray-300 hover:text-cyan-400 transition-colors py-2 px-4 rounded-lg hover:bg-cyan-400/10"
               >
                 Contact
               </button>
@@ -219,10 +285,10 @@ export default function Portfolio() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
-              onClick={() => scrollToSection("projects")}
+              onClick={() => scrollToSection("work")}
               className="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white px-8 py-3"
             >
-              View My Skills
+              View My Work
             </Button>
             <Button
               onClick={handleDownloadCV}
@@ -328,235 +394,131 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* Skills & Technologies Section */}
-      <section id="projects" className="py-20 bg-black">
+      {/* My Work Section */}
+      <section id="work" className="py-20 bg-black">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-cyan-400">
-            {"<Skills & Technologies />"}
+            {"<My Work />"}
           </h2>
 
-          {/* Main Skills Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {/* Frontend Development */}
-            <Card className="bg-gray-900/50 border-cyan-500/30 hover:border-cyan-500/60 transition-all duration-300 group">
+          {/* Featured Projects Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            
+            {/* Portfolio Application */}
+            <Card className="bg-gray-900/50 border-cyan-500/30 hover:border-cyan-500/60 transition-all duration-300 group overflow-hidden">
+              <div className="relative h-48 overflow-hidden">
+                <Image
+                  src="/abdulKaderAlBayWebScreenShot.PNG"
+                  alt="Portfolio Website Screenshot"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+                {/* Optional overlay for better text readability */}
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
+              </div>
               <CardHeader>
-                <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Code className="w-8 h-8 text-white" />
-                </div>
-                <CardTitle className="text-cyan-400">
-                  Frontend Development
-                </CardTitle>
+                <CardTitle className="text-cyan-400">Portfolio Website</CardTitle>
                 <CardDescription className="text-gray-400">
-                  Building responsive and interactive user interfaces
+                Modern photography portfolio with Next.js and Supabase
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">React</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-cyan-400 to-blue-400 h-2 rounded-full w-5/6"></div>
-                    </div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2 py-1 bg-cyan-500/20 text-cyan-400 text-xs rounded">Next JS</span>
+                    <span className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded">Supabase</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Next.js</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-cyan-400 to-blue-400 h-2 rounded-full w-4/5"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">JavaScript</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-cyan-400 to-blue-400 h-2 rounded-full w-5/6"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">HTML/CSS</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-cyan-400 to-blue-400 h-2 rounded-full w-full"></div>
-                    </div>
+                  <p className="text-gray-300 text-sm">
+                  A modern, responsive photography portfolio website built with Next.js, featuring admin dashboard, database integration, and multi-language support.
+                  </p>
+                  <div className="flex space-x-2 pt-2">
+                    <Button 
+                      size="sm" 
+                      className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                      onClick={() => window.open('https://abdulkaderalbay.vercel.app', '_blank')}
+                    >
+                      <Globe className="w-4 h-4 mr-1" />
+                      Live Demo
+                    </Button>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Backend Development */}
-            <Card className="bg-gray-900/50 border-purple-500/30 hover:border-purple-500/60 transition-all duration-300 group">
+                        {/* Awtad Project Card */}
+            <Card className="bg-gray-900/50 border-green-500/30 hover:border-green-500/60 transition-all duration-300 group overflow-hidden">
+              <div className="relative h-48 overflow-hidden">
+                <Image
+                  src="/awtadscreenshot.png"
+                  alt="Awtad Project Screenshot"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+                {/* Optional overlay for better text readability */}
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
+              </div>
               <CardHeader>
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Terminal className="w-8 h-8 text-white" />
-                </div>
-                <CardTitle className="text-purple-400">
-                  Backend Development
-                </CardTitle>
+                <CardTitle className="text-green-400">AWTAD - Steel Design & Engineering</CardTitle>
                 <CardDescription className="text-gray-400">
-                  Creating robust server-side applications and APIs
+                  Advanced steel design and engineering website built with Next.js and Supabase
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Node.js</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full w-4/5"></div>
-                    </div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">Next.js</span>
+                    <span className="px-2 py-1 bg-cyan-500/20 text-cyan-400 text-xs rounded">Supabase</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Express.js</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full w-4/5"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">REST APIs</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full w-3/4"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Authentication</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-purple-400 to-pink-400 h-2 rounded-full w-3/5"></div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Database Management */}
-            <Card className="bg-gray-900/50 border-green-500/30 hover:border-green-500/60 transition-all duration-300 group">
-              <CardHeader>
-                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Database className="w-8 h-8 text-white" />
-                </div>
-                <CardTitle className="text-green-400">
-                  Database Management
-                </CardTitle>
-                <CardDescription className="text-gray-400">
-                  Designing and managing efficient data storage solutions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">MySQL</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-green-400 to-emerald-400 h-2 rounded-full w-4/5"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">MongoDB</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-green-400 to-emerald-400 h-2 rounded-full w-3/4"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Database Design</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-green-400 to-emerald-400 h-2 rounded-full w-3/5"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Data Modeling</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-green-400 to-emerald-400 h-2 rounded-full w-2/3"></div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Web Application Security */}
-            <Card className="bg-gray-900/50 border-red-500/30 hover:border-red-500/60 transition-all duration-300 group">
-              <CardHeader>
-                <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                    />
-                  </svg>
-                </div>
-                <CardTitle className="text-red-400">Web App Security</CardTitle>
-                <CardDescription className="text-gray-400">
-                  Securing applications against modern cyber threats
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Penetration Testing</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-red-400 to-orange-400 h-2 rounded-full w-5/6"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">OWASP Top 10</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-red-400 to-orange-400 h-2 rounded-full w-5/6"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">Secure Coding</span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-red-400 to-orange-400 h-2 rounded-full w-4/5"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-300">
-                      Vulnerability Assessment
-                    </span>
-                    <div className="w-24 bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-red-400 to-orange-400 h-2 rounded-full w-3/4"></div>
-                    </div>
+                  <p className="text-gray-300 text-sm">
+                   AWTAD - Advanced Steel Design & Engineering Website featuring modern web technologies, 
+                   responsive design, and professional engineering solutions.
+                  </p>
+                  <div className="flex space-x-2 pt-2">
+                    <Button 
+                      size="sm" 
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                      onClick={() => window.open('https://awtad-website.vercel.app', '_blank')}
+                    >
+                      <Globe className="w-4 h-4 mr-1" />
+                      Live Demo
+                    </Button>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Learning Journey */}
+          {/* Skills Summary */}
           <div className="max-w-4xl mx-auto">
             <h3 className="text-3xl font-bold text-center mb-12 text-purple-400">
-              Current Learning Journey
+              Technologies & Skills
             </h3>
             <div className="grid md:grid-cols-2 gap-8">
               <Card className="bg-gray-900/50 border-cyan-500/30">
                 <CardHeader>
                   <CardTitle className="text-cyan-400 flex items-center">
-                    <Terminal className="w-5 h-5 mr-2" />
-                    Currently Mastering
+                    <Code className="w-5 h-5 mr-2" />
+                    Frontend Technologies
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-                    <span className="text-gray-300">
-                      Advanced React Patterns
-                    </span>
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                    <span className="text-gray-300">React & Next.js</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse delay-200"></div>
-                    <span className="text-gray-300">Next.js App Router</span>
+                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                    <span className="text-gray-300">TypeScript & JavaScript</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse delay-400"></div>
-                    <span className="text-gray-300">
-                      Advanced Web App Security
-                    </span>
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span className="text-gray-300">Tailwind CSS & Material-UI</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse delay-600"></div>
-                    <span className="text-gray-300">
-                      Security Automation Tools
-                    </span>
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span className="text-gray-300">HTML5 & CSS3</span>
                   </div>
                 </CardContent>
               </Card>
@@ -564,32 +526,26 @@ export default function Portfolio() {
               <Card className="bg-gray-900/50 border-purple-500/30">
                 <CardHeader>
                   <CardTitle className="text-purple-400 flex items-center">
-                    <Globe className="w-5 h-5 mr-2" />
-                    Next Goals
+                    <Terminal className="w-5 h-5 mr-2" />
+                    Backend & Database
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
-                    <span className="text-gray-300">
-                      Cloud Security (AWS/Azure)
-                    </span>
+                    <span className="text-gray-300">Node.js & Express.js</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                    <span className="text-gray-300">
-                      Security Certifications (CEH/CISSP)
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                    <span className="text-gray-300">DevSecOps Integration</span>
+                    <span className="text-gray-300">MongoDB & PostgreSQL</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span className="text-gray-300">
-                      AI/ML Security Applications
-                    </span>
+                    <span className="text-gray-300">RESTful APIs & GraphQL</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span className="text-gray-300">Authentication & Security</span>
                   </div>
                 </CardContent>
               </Card>
@@ -599,12 +555,12 @@ export default function Portfolio() {
           {/* Call to Action */}
           <div className="text-center mt-16">
             <h3 className="text-2xl font-bold mb-4 text-cyan-400">
-              Ready to Build Secure Applications?
+              Ready to Build Something Amazing?
             </h3>
             <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-              I combine full-stack development expertise with cybersecurity
-              knowledge to create applications that are both powerful and
-              secure. Let's build something that users can trust!
+              I specialize in creating modern, secure, and scalable web applications. 
+              From concept to deployment, I bring ideas to life with clean code 
+              and exceptional user experiences.
             </p>
             <Button
               onClick={() => scrollToSection("contact")}
