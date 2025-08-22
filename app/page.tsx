@@ -450,7 +450,7 @@ export default function Portfolio() {
             <Card className="bg-gray-900/50 border-green-500/30 hover:border-green-500/60 transition-all duration-300 group overflow-hidden">
               <div className="relative h-48 overflow-hidden">
                 <Image
-                  src="/awtadScreenShot.png"
+                  src="/awtadScreenShot.PNG"
                   alt="Awtad Project Screenshot"
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-300"
