@@ -97,6 +97,50 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Enhanced smooth scrolling for all elements */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Scroll to top button animations */
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.scroll-to-top-enter {
+  animation: slideInFromBottom 0.3s ease-out, fadeIn 0.3s ease-out;
+}
+
+/* Pulse effect for scroll to top button */
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(0, 255, 255, 0);
+  }
+}
+
+.scroll-to-top-enter {
+  animation: slideInFromBottom 0.3s ease-out, fadeIn 0.3s ease-out, pulse 2s ease-in-out 0.3s;
+}
+
 /* Glitch effect for text */
 .glitch {
   position: relative;

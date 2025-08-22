@@ -38,10 +38,11 @@ export default function Portfolio() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
+      // Show button when user scrolls down more than 300px
+      setShowScrollTop(window.scrollY > 300);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -53,7 +54,11 @@ export default function Portfolio() {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Smooth scroll to top with a small offset to ensure proper positioning
+    window.scrollTo({ 
+      top: 0, 
+      behavior: "smooth" 
+    });
   };
 
   const toggleMobileMenu = () => {
@@ -741,6 +746,20 @@ export default function Portfolio() {
           </div>
         </div>
       </footer>
+
+      {/* Scroll to Top Button */}
+      <button
+        onClick={scrollToTop}
+        className={`fixed bottom-20 right-6 z-50 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 text-white p-4 rounded-full shadow-2xl hover:shadow-cyan-500/25 transition-all duration-500 ease-out transform hover:scale-110 hover:-translate-y-1 active:scale-95 ${
+          showScrollTop 
+            ? 'opacity-100 translate-y-0 pointer-events-auto' 
+            : 'opacity-0 translate-y-4 pointer-events-none'
+        }`}
+        aria-label="Scroll to top"
+        title="Scroll to top"
+      >
+        <ChevronUp className="w-5 h-5" />
+      </button>
     </div>
   );
 }
