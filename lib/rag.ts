@@ -1,3 +1,5 @@
+import { aiIntegration } from './ai-integration';
+
 // Portfolio knowledge base
 const PORTFOLIO_KNOWLEDGE = `
 # Mohamad Chalhoub - Portfolio Knowledge Base
@@ -208,6 +210,55 @@ Try asking about:
 - His work experience
 
 What would you like to know about Mohamad?`;
+  }
+
+  // Main method to generate responses for any type of query
+  async generateComprehensiveResponse(query: string): Promise<string> {
+    const queryLower = query.toLowerCase();
+    
+    // Check if this is a portfolio-related query
+    const isPortfolioQuery = this.isPortfolioRelated(queryLower);
+    
+    if (isPortfolioQuery) {
+      // Get context and generate portfolio response
+      const context = await this.getContextForQuery(query);
+      return this.generateResponse(query, context);
+    } else {
+      // Handle general questions using AI integration
+      try {
+        const aiResponse = await aiIntegration.generateGeneralResponse(query);
+        return `${aiResponse.text}\n\n💡 **Note**: I'm primarily designed to help with questions about Mohamad's portfolio. For more detailed general assistance, consider using a general AI assistant.`;
+      } catch (error) {
+        console.error('Error generating general response:', error);
+        return this.generateFallbackResponse(query);
+      }
+    }
+  }
+
+  private isPortfolioRelated(query: string): boolean {
+    const portfolioKeywords = [
+      'mohamad', 'chalhoub', 'portfolio', 'skill', 'project', 'experience',
+      'work', 'job', 'github', 'linkedin', 'contact', 'email', 'technology',
+      'tech', 'code', 'developer', 'programming', 'software', 'web', 'app',
+      'react', 'next', 'node', 'python', 'database', 'aws', 'docker'
+    ];
+    
+    return portfolioKeywords.some(keyword => query.includes(keyword));
+  }
+
+  private generateFallbackResponse(query: string): string {
+    return `I'm Mohamad's portfolio AI assistant, so I'm best at answering questions about his skills, projects, and experience. 
+
+Your question "${query}" seems to be about something else. I'd recommend:
+- Using a general AI assistant like ChatGPT or Claude for broader topics
+- Consulting relevant documentation or resources
+- Reaching out to subject matter experts
+
+What would you like to know about Mohamad's portfolio? I can tell you about his:
+- Technical skills and technologies
+- Projects and work experience
+- GitHub and LinkedIn profiles
+- How to contact him`;
   }
 }
 

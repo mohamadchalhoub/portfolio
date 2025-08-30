@@ -17,11 +17,8 @@ export async function POST(request: NextRequest) {
       await portfolioRAG.initialize();
     }
 
-    // Get relevant context from the portfolio knowledge base
-    const context = await portfolioRAG.getContextForQuery(message);
-
-    // Generate response using the RAG system
-    const reply = await portfolioRAG.generateResponse(message, context);
+    // Generate comprehensive response that can handle both portfolio and general questions
+    const reply = await portfolioRAG.generateComprehensiveResponse(message);
 
     return NextResponse.json({ reply });
   } catch (error) {
