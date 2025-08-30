@@ -219,17 +219,25 @@ What would you like to know about Mohamad?`;
     // Check if this is a portfolio-related query
     const isPortfolioQuery = this.isPortfolioRelated(queryLower);
     
+    console.log('🔍 RAG System Debug:');
+    console.log('- Query:', query);
+    console.log('- Is Portfolio Query:', isPortfolioQuery);
+    
     if (isPortfolioQuery) {
+      console.log('📚 Using Portfolio RAG system');
       // Get context and generate portfolio response
       const context = await this.getContextForQuery(query);
       return this.generateResponse(query, context);
     } else {
+      console.log('🤖 Using General AI system');
       // Handle general questions using AI integration
       try {
         const aiResponse = await aiIntegration.generateGeneralResponse(query);
+        console.log('✅ AI Integration response:', aiResponse.source);
         return `${aiResponse.text}\n\n💡 **Note**: I'm primarily designed to help with questions about Mohamad's portfolio. For more detailed general assistance, consider using a general AI assistant.`;
       } catch (error) {
-        console.error('Error generating general response:', error);
+        console.error('❌ AI Integration error:', error);
+        console.log('🔄 Using fallback response');
         return this.generateFallbackResponse(query);
       }
     }

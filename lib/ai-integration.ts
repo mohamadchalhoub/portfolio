@@ -13,17 +13,29 @@ export class AIIntegration {
   }
 
   async generateGeneralResponse(query: string): Promise<AIResponse> {
+    console.log('🔍 AI Integration Debug:');
+    console.log('- Query:', query);
+    console.log('- OpenAI API Key available:', !!this.openaiApiKey);
+    console.log('- API Key length:', this.openaiApiKey?.length || 0);
+    
     // Option 1: OpenAI GPT (if API key is available)
     if (this.openaiApiKey) {
+      console.log('🚀 Attempting OpenAI API call...');
       try {
-        return await this.generateOpenAIResponse(query);
+        const response = await this.generateOpenAIResponse(query);
+        console.log('✅ OpenAI response successful:', response.source);
+        return response;
       } catch (error) {
-        console.error('OpenAI API error:', error);
+        console.error('❌ OpenAI API error:', error);
+        console.log('🔄 Falling back to rule-based responses');
         // Fallback to rule-based responses
       }
+    } else {
+      console.log('⚠️ No OpenAI API key found, using rule-based responses');
     }
 
     // Option 2: Rule-based responses (fallback)
+    console.log('📝 Using rule-based response');
     return this.generateRuleBasedResponse(query);
   }
 
