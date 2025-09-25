@@ -498,7 +498,7 @@ export default function Portfolio() {
             <Card className="bg-gray-900/50 border-orange-500/30 hover:border-orange-500/60 transition-all duration-300 group overflow-hidden">
               <div className="relative h-48 overflow-hidden">
                 <Image
-                  src="/e-commerce.png"
+                  src="/e-commerce.PNG"
                   alt="KidsCorner E-commerce Website Screenshot"
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-300"
@@ -544,7 +544,7 @@ export default function Portfolio() {
             <Card className="bg-gray-900/50 border-blue-500/30 hover:border-blue-500/60 transition-all duration-300 group overflow-hidden">
               <div className="relative h-48 overflow-hidden">
                 <Image
-                  src="/minamazeh.png"
+                  src="/minamazeh.PNG"
                   alt="Minamzeh Portfolio Website Screenshot"
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-300"
