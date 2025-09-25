@@ -493,6 +493,96 @@ export default function Portfolio() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* KidsCorner E-commerce Project */}
+            <Card className="bg-gray-900/50 border-orange-500/30 hover:border-orange-500/60 transition-all duration-300 group overflow-hidden">
+              <div className="relative h-48 overflow-hidden">
+                <Image
+                  src="/e-commerce.png"
+                  alt="KidsCorner E-commerce Website Screenshot"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+                {/* Optional overlay for better text readability */}
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
+              </div>
+              <CardHeader>
+                <CardTitle className="text-orange-400">KidsCorner - E-commerce Platform</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Full-stack e-commerce website with admin dashboard
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs rounded">Next.js</span>
+                    <span className="px-2 py-1 bg-cyan-500/20 text-cyan-400 text-xs rounded">Supabase</span>
+                    <span className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded">TypeScript</span>
+                    <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">Tailwind CSS</span>
+                  </div>
+                  <p className="text-gray-300 text-sm">
+                    A comprehensive e-commerce platform specializing in children's fashion. Features include product catalog, 
+                    shopping cart, user authentication, payment processing, and a full admin dashboard for managing products, 
+                    orders, and inventory.
+                  </p>
+                  <div className="flex space-x-2 pt-2">
+                    <Button 
+                      size="sm" 
+                      className="bg-orange-600 hover:bg-orange-700 text-white"
+                      onClick={() => window.open('https://kidsfashion.vercel.app', '_blank')}
+                    >
+                      <Globe className="w-4 h-4 mr-1" />
+                      Live Demo
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Minamzeh Portfolio Website */}
+            <Card className="bg-gray-900/50 border-blue-500/30 hover:border-blue-500/60 transition-all duration-300 group overflow-hidden">
+              <div className="relative h-48 overflow-hidden">
+                <Image
+                  src="/minamazeh.png"
+                  alt="Minamzeh Portfolio Website Screenshot"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+                {/* Optional overlay for better text readability */}
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
+              </div>
+              <CardHeader>
+                <CardTitle className="text-blue-400">Minamzeh - Portfolio Informative Website</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Modern portfolio website built with Next.js, Tailwind CSS, and TypeScript
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded">Next.js</span>
+                    <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">Tailwind CSS</span>
+                    <span className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded">TypeScript</span>
+                  </div>
+                  <p className="text-gray-300 text-sm">
+                    A modern, informative portfolio website showcasing professional work and achievements. 
+                    Features responsive design, clean UI/UX, and optimized performance with Next.js and TypeScript.
+                  </p>
+                  <div className="flex space-x-2 pt-2">
+                    <Button 
+                      size="sm" 
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => window.open('https://minamazeh.com', '_blank')}
+                    >
+                      <Globe className="w-4 h-4 mr-1" />
+                      Live Demo
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Skills Summary */}
