@@ -98,15 +98,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { firstName, lastName, email, subject, message, company, startedAt } = parsed.data;
+  const { firstName, lastName, email, subject, message, startedAt } = parsed.data;
 
-  const isHoneypotTriggered = Boolean(company);
   const isTooFast = Date.now() - startedAt < MIN_FILL_TIME_MS;
-
-  if (isHoneypotTriggered) {
-    // Respond as if it succeeded so automated senders don't learn to adapt.
-    return NextResponse.json({ ok: true });
-  }
 
   if (isTooFast) {
     return NextResponse.json(

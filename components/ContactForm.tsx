@@ -30,7 +30,6 @@ export function ContactForm() {
       email: "",
       subject: "",
       message: "",
-      company: "",
       startedAt: startedAtRef.current,
     },
   });
@@ -58,7 +57,6 @@ export function ContactForm() {
         email: "",
         subject: "",
         message: "",
-        company: "",
         startedAt: Date.now(),
       });
       startedAtRef.current = Date.now();
@@ -147,19 +145,6 @@ export function ContactForm() {
             </FormItem>
           )}
         />
-
-        {/* Honeypot — hidden from sighted and screen-reader users, left
-            unfilled by people and often filled by bots. */}
-        <div className="absolute -left-[9999px]" aria-hidden="true">
-          <label htmlFor="company">Company</label>
-          <input
-            id="company"
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            {...form.register("company")}
-          />
-        </div>
 
         <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-engineering to-cyan-300 font-semibold shadow-[0_8px_30px_rgba(0,212,200,.18)] transition-transform hover:-translate-y-0.5">
           <Mail className="mr-2 h-4 w-4" aria-hidden="true" />

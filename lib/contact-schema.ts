@@ -13,8 +13,6 @@ export const contactSchema = z.object({
     .trim()
     .min(10, "Message must be at least 10 characters.")
     .max(4000, "Message must be under 4000 characters."),
-  // Honeypot: real visitors never see or fill this field.
-  company: z.string().max(200).optional(),
   // Timestamp (ms) the form was rendered, used server-side to reject
   // submissions that arrive implausibly fast to have been typed by a person.
   startedAt: z.number(),
