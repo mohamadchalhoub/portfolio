@@ -56,7 +56,11 @@ export const SCENE_KEYFRAMES: Record<SceneSectionId, SceneKeyframe> = {
     accentA: { color: CYAN, intensity: 0.6 },
     accentB: { color: AMBER, intensity: 0 },
     fog: { color: DARK, near: 5, far: 15 },
-    model: { position: [-1.4, 0.1, -0.6], rotationBias: 0.7, scale: 0.9 },
+    // Scaled down and pushed back from the close, oversized framing this
+    // used to have — at the old size/distance the core's dark near face
+    // filled enough of the frame to read as a flat, out-of-focus blob
+    // rather than a globe, right behind the profile photo/bio text.
+    model: { position: [-1.8, 0.1, -2.1], rotationBias: 0.7, scale: 0.55 },
   },
   capabilities: {
     camera: { position: [0, 1.2, 5.5], target: [0, 0, 0], fov: 34 },
@@ -64,7 +68,7 @@ export const SCENE_KEYFRAMES: Record<SceneSectionId, SceneKeyframe> = {
     accentA: { color: CYAN, intensity: 1.1 },
     accentB: { color: AMBER, intensity: 1.1 },
     fog: { color: DARK, near: 5, far: 15 },
-    model: { position: [0, 0, -1.6], rotationBias: 1.3, scale: 0.75 },
+    model: { position: [0, 0, -2.6], rotationBias: 1.3, scale: 0.6 },
   },
   toolbox: {
     camera: { position: [1.8, 2.6, 6.5], target: [0, 0, -1], fov: 38 },
@@ -88,7 +92,7 @@ export const SCENE_KEYFRAMES: Record<SceneSectionId, SceneKeyframe> = {
     accentA: { color: AMBER, intensity: 1.4 },
     accentB: { color: CYAN, intensity: 0 },
     fog: { color: DARK_WARM, near: 3, far: 10 },
-    model: { position: [2.2, 0.3, -1.4], rotationBias: 3.4, scale: 0.55 },
+    model: { position: [2.4, 0.3, -2.6], rotationBias: 3.4, scale: 0.4 },
   },
   method: {
     camera: { position: [2.2, 1.4, 5.0], target: [0.8, 0, -1.8], fov: 34 },
@@ -96,7 +100,7 @@ export const SCENE_KEYFRAMES: Record<SceneSectionId, SceneKeyframe> = {
     accentA: { color: CYAN, intensity: 0.8 },
     accentB: { color: AMBER, intensity: 0 },
     fog: { color: DARK, near: 5, far: 13 },
-    model: { position: [2.6, 0.2, -3.2], rotationBias: 4.2, scale: 0.42 },
+    model: { position: [2.8, 0.2, -4.2], rotationBias: 4.2, scale: 0.32 },
   },
   contact: {
     camera: { position: [2.4, 1.8, 4.4], target: [-0.8, 0, -1], fov: 34 },
