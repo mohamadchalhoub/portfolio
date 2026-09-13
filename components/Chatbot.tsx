@@ -82,6 +82,17 @@ export default function Chatbot() {
     return () => window.clearTimeout(timer);
   }, [open]);
 
+  // The nudge is a one-time hint, not a persistent fixture — left up
+  // indefinitely it ends up parked over whatever section the visitor has
+  // since scrolled to (it's position: fixed), colliding with real content.
+  // Auto-retract it if nobody acts on it within a few seconds; dismissing
+  // or opening the assistant already clears it sooner via the effect above.
+  useEffect(() => {
+    if (!showNudge) return;
+    const timer = window.setTimeout(() => setShowNudge(false), 6000);
+    return () => window.clearTimeout(timer);
+  }, [showNudge]);
+
   function openAssistant() {
     setShowNudge(false);
     setOpen(true);

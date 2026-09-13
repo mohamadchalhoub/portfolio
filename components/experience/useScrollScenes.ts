@@ -8,6 +8,14 @@ import { SCENE_SECTION_IDS, SCENE_KEYFRAMES, type SceneSectionId } from "./scrol
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+  // Mobile browsers hide/show their address bar as the page scrolls, which
+  // fires a `resize` event on every transition. Without this, ScrollTrigger
+  // treats that as a real layout change and recalculates start/end
+  // positions mid-scroll, which is what makes the scroll-driven camera/model
+  // stutter or jump on phones even though the exact same driver is smooth on
+  // desktop. This is GSAP's own documented fix for that mobile-only class of
+  // bug and has no effect on desktop scrolling.
+  ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
 /** Live, mutable scene state that a single R3F useFrame loop damps the

@@ -87,12 +87,13 @@ function SceneRig({ target, deviceTier }: { target: SceneTarget; deviceTier: Dev
       // second, mobile-specific keyframe table, shrink and push the whole
       // model back uniformly on this tier — quiet enough everywhere that it
       // reads as background atmosphere instead of competing with content.
-      // The orbital-core model reads visually "heavier" than the old flat
-      // slab stack (a solid emissive core plus opaque shell, vs. thin
-      // plates), so it needs a stronger mobile push-back than that model
-      // did to stay legible behind single-column text.
-      const mobileScale = deviceTier === "reduced" ? 0.1 : 1;
-      const mobileZPush = deviceTier === "reduced" ? -3 : 0;
+      // Keep this a *visible* reduction, not a near-zero one: at the 0.1
+      // scale this used to be, the core shrank past the point of reading as
+      // anything on a real phone screen, which is what made the whole
+      // cinematic layer look broken/absent on mobile rather than just
+      // quieter than desktop.
+      const mobileScale = deviceTier === "reduced" ? 0.45 : 1;
+      const mobileZPush = deviceTier === "reduced" ? -1.4 : 0;
       group.position.x = THREE.MathUtils.damp(group.position.x, target.modelPosition.x, lambda, d);
       group.position.y = THREE.MathUtils.damp(group.position.y, target.modelPosition.y, lambda, d);
       group.position.z = THREE.MathUtils.damp(group.position.z, target.modelPosition.z + mobileZPush, lambda, d);
