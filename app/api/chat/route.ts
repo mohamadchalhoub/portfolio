@@ -3,11 +3,13 @@ import { portfolioRAG } from '@/lib/rag';
 
 export async function POST(request: NextRequest) {
   try {
-    const { message } = await request.json();
+    const body = await request.json().catch(() => null);
+    const message = body?.message;
+    const history = Array.isArray(body?.history) ? body.history.slice(-8) : [];
 
-    if (!message) {
+    if (typeof message !== 'string' || !message.trim() || message.length > 1500) {
       return NextResponse.json(
-        { error: 'Message is required' },
+        { error: 'Please enter a message between 1 and 1500 characters.' },
         { status: 400 }
       );
     }
@@ -18,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate comprehensive response that can handle both portfolio and general questions
-    const reply = await portfolioRAG.generateComprehensiveResponse(message);
+    const reply = await portfolioRAG.generateComprehensiveResponse(message, history);
 
     return NextResponse.json({ reply });
   } catch (error) {

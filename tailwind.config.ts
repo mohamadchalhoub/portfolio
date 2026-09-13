@@ -1,13 +1,12 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
+import { PALETTE } from "./content/site";
 
 const config: Config = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
-    "*.{js,ts,jsx,tsx,mdx}",
+    "./content/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
@@ -19,6 +18,10 @@ const config: Config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -53,19 +56,12 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Dystopian color palette
-        neon: {
-          cyan: "#00ffff",
-          purple: "#bf00ff",
-          green: "#00ff41",
-          pink: "#ff0080",
-          yellow: "#ffff00",
-        },
-        dark: {
-          900: "#0a0a0a",
-          800: "#1a1a1a",
-          700: "#2a2a2a",
-        },
+        // Secure systems accents — single source of truth in content/site.ts.
+        // `engineering` (cyan) is the one primary interactive accent; the
+        // rest are small category tags only (capability pillars, project tags).
+        engineering: PALETTE.engineering,
+        security: PALETTE.security,
+        creative: PALETTE.creative,
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -81,23 +77,19 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        pulse: {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.3" },
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(12px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "fade-up": "fade-up 0.6s ease-out both",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;

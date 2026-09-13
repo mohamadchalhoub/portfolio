@@ -29,7 +29,7 @@ Your portfolio now has a **MUCH SMARTER** AI chatbot! Here's what's been improve
 ### **Enhanced Categories**
 - **Skills**: 4 different detailed responses
 - **Projects**: 4 varied project descriptions  
-- **GitHub**: 4 different ways to present GitHub info
+- **Case studies**: focused answers about public work
 - **LinkedIn**: 4 varied professional networking responses
 - **Experience**: 4 different experience descriptions
 - **Contact**: 4 varied contact information responses
@@ -92,7 +92,7 @@ skills: [
 
 ### **Update Personal Information**
 Modify the responses to match your actual:
-- GitHub profile URL
+- Public case-study details
 - LinkedIn profile URL  
 - Project descriptions
 - Skills and technologies

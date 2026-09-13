@@ -1,150 +1,35 @@
-// AI Integration for handling general questions
-export interface AIResponse {
-  text: string;
-  source: string;
-  confidence: number;
-}
+export interface ChatTurn { role:"user"|"assistant"; content:string; }
 
+/** Provider-neutral OpenAI-compatible client. Works with OpenAI by default,
+ * or another compatible gateway through AI_BASE_URL / AI_MODEL. Secrets stay
+ * server-side and are never logged. */
 export class AIIntegration {
-  private openaiApiKey: string | undefined;
+  private apiKey=process.env.AI_API_KEY||process.env.OPENAI_API_KEY;
+  private baseUrl=(process.env.AI_BASE_URL||"https://api.openai.com/v1").replace(/\/$/,"");
+  private model=process.env.AI_MODEL||"gpt-4o-mini";
 
-  constructor() {
-    this.openaiApiKey = process.env.OPENAI_API_KEY;
-  }
+  get configured(){return Boolean(this.apiKey);}
 
-  async generateGeneralResponse(query: string): Promise<AIResponse> {
-    console.log('🔍 AI Integration Debug:');
-    console.log('- Query:', query);
-    console.log('- OpenAI API Key available:', !!this.openaiApiKey);
-    console.log('- API Key length:', this.openaiApiKey?.length || 0);
-    
-    // Option 1: OpenAI GPT (if API key is available)
-    if (this.openaiApiKey) {
-      console.log('🚀 Attempting OpenAI API call...');
-      try {
-        const response = await this.generateOpenAIResponse(query);
-        console.log('✅ OpenAI response successful:', response.source);
-        return response;
-      } catch (error) {
-        console.error('❌ OpenAI API error:', error);
-        console.log('🔄 Falling back to rule-based responses');
-        // Fallback to rule-based responses
-      }
-    } else {
-      console.log('⚠️ No OpenAI API key found, using rule-based responses');
-    }
+  async generatePortfolioResponse(query:string,context:string,history:ChatTurn[]=[]):Promise<string|null>{
+    if(!this.apiKey)return null;
+    const safeHistory=history.slice(-6).filter(turn=>(turn.role==="user"||turn.role==="assistant")&&typeof turn.content==="string").map(turn=>({role:turn.role,content:turn.content.slice(0,1000)}));
+    const response=await fetch(`${this.baseUrl}/chat/completions`,{method:"POST",headers:{Authorization:`Bearer ${this.apiKey}`,"Content-Type":"application/json"},body:JSON.stringify({model:this.model,temperature:.25,max_tokens:260,messages:[{role:"system",content:`You are the concise portfolio assistant for Mohamad Chalhoub.
 
-    // Option 2: Rule-based responses (fallback)
-    console.log('📝 Using rule-based response');
-    return this.generateRuleBasedResponse(query);
-  }
+Hard privacy and truth rules:
+- Never reveal, guess, or infer private contact details, phone numbers, home addresses, repository URLs, credentials, employers, certifications, rates, private platform names, bug reports, proofs of concept, or undisclosed security findings.
+- Never invent projects, client results, metrics, employment history, certifications, awards, or security discoveries.
+- For questions about Mohamad, his work, availability, background, projects, or security experience, answer only from the supplied portfolio context.
+- For general educational software/security questions that are not asking for private facts about Mohamad, you may answer from general knowledge in a brief, professional way.
+- Direct hiring and project enquiries to the site's contact form.
+- If unsure whether something is confirmed, say it is not confirmed here.
+- Keep answers under 130 words.
 
-  private async generateOpenAIResponse(query: string): Promise<AIResponse> {
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.openaiApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful AI assistant. Provide concise, accurate answers to general questions. Keep responses under 150 words.'
-            },
-            {
-              role: 'user',
-              content: query
-            }
-          ],
-          max_tokens: 200,
-          temperature: 0.7,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const text = data.choices[0]?.message?.content || 'Sorry, I couldn\'t generate a response.';
-
-      return {
-        text,
-        source: 'OpenAI GPT',
-        confidence: 0.9,
-      };
-    } catch (error) {
-      console.error('OpenAI API error:', error);
-      throw error;
-    }
-  }
-
-  private generateRuleBasedResponse(query: string): AIResponse {
-    const queryLower = query.toLowerCase();
-    
-    // Common question patterns and responses
-    if (queryLower.includes('weather')) {
-      return {
-        text: "I can't provide real-time weather information, but I can help you find weather apps or websites. For current weather, try checking weather.com or your local weather service.",
-        source: 'Rule-based',
-        confidence: 0.8,
-      };
-    }
-
-    if (queryLower.includes('joke') || queryLower.includes('funny')) {
-      return {
-        text: "I'm focused on being helpful rather than entertaining, but I can recommend some great comedy podcasts or shows! What would you like help with?",
-        source: 'Rule-based',
-        confidence: 0.7,
-      };
-    }
-
-    if (queryLower.includes('math') || queryLower.includes('calculate')) {
-      return {
-        text: "For mathematical calculations, I'd recommend using a calculator app or website like Wolfram Alpha. I'm better at helping with other types of questions.",
-        source: 'Rule-based',
-        confidence: 0.8,
-      };
-    }
-
-    if (queryLower.includes('recipe') || queryLower.includes('cooking')) {
-      return {
-        text: "I can't provide recipes, but I can recommend great cooking websites like AllRecipes, Food Network, or Bon Appétit. What would you like to cook?",
-        source: 'Rule-based',
-        confidence: 0.7,
-      };
-    }
-
-    if (queryLower.includes('movie') || queryLower.includes('film')) {
-      return {
-        text: "I can't make movie recommendations, but I'd suggest checking out IMDb, Rotten Tomatoes, or asking friends for suggestions. What genre are you interested in?",
-        source: 'Rule-based',
-        confidence: 0.6,
-      };
-    }
-
-    // Default response for unrecognized queries
-    return {
-      text: "I'm not sure how to help with that specific question. I'm designed to assist with portfolio-related inquiries, but for general questions, I'd recommend using a general AI assistant like ChatGPT or consulting relevant resources.",
-      source: 'Rule-based',
-      confidence: 0.5,
-    };
-  }
-
-  // Method to check if a query should be handled by general AI
-  shouldUseGeneralAI(query: string): boolean {
-    const generalTopics = [
-      'weather', 'joke', 'math', 'recipe', 'cooking', 'movie', 'film',
-      'music', 'sports', 'news', 'politics', 'history', 'science',
-      'philosophy', 'religion', 'travel', 'health', 'fitness'
-    ];
-    
-    return generalTopics.some(topic => query.toLowerCase().includes(topic));
+PORTFOLIO CONTEXT:
+${context}`},...safeHistory.filter((_,i)=>i<safeHistory.length-1),{role:"user",content:query}]}),cache:"no-store"});
+    if(!response.ok)throw new Error(`AI provider returned ${response.status}`);
+    const data=await response.json();
+    return data?.choices?.[0]?.message?.content?.trim()||null;
   }
 }
 
-// Singleton instance
-export const aiIntegration = new AIIntegration();
+export const aiIntegration=new AIIntegration();

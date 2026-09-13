@@ -1,353 +1,271 @@
-"use client"
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useEffect, useRef, useState } from "react";
+import { ArrowUp, RotateCcw, ShieldCheck, Sparkles, X } from "lucide-react";
+import { usePrefersReducedMotion } from "@/hooks/use-reduced-motion";
+import { cn } from "@/lib/utils";
 
 interface Message {
   id: string;
+  role: "user" | "assistant";
   text: string;
-  isUser: boolean;
-  timestamp: Date;
 }
 
+const initial: Message = {
+  id: "welcome",
+  role: "assistant",
+  text: "Hi - I'm Mohamad's portfolio assistant. I can explain his engineering approach, application-security work, case studies, or how to start a project.",
+};
 
+const suggestions = [
+  "What can Mohamad build?",
+  "What security bugs has he found?",
+  "How does he approach security?",
+  "How can we work together?",
+];
 
-const Chatbot: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: "Hi! I'm your AI assistant. Ask me about Mohamad's projects, skills, or experience!",
-      isUser: false,
-      timestamp: new Date(),
-    },
-  ]);
-  const [inputValue, setInputValue] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
+function ChatbotIcon({ className }: { className?: string }) {
+  const reduced = usePrefersReducedMotion();
+  const [failed, setFailed] = useState(false);
 
-  const suggestedQuestions = [
-    "What are your skills?",
-    "Show me your projects",
-    "What's your GitHub?",
-    "LinkedIn profile?",
-  ];
+  return (
+    <span
+      className={cn("relative grid place-items-center overflow-hidden rounded-full", className)}
+      aria-hidden="true"
+    >
+      {failed ? (
+        <ShieldCheck className="h-[48%] w-[48%] text-engineering" strokeWidth={1.8} />
+      ) : (
+        <video
+          src="/ai-bot.webm"
+          className="h-full w-full object-cover"
+          autoPlay={!reduced}
+          loop={!reduced}
+          muted
+          playsInline
+          disablePictureInPicture
+          controls={false}
+          controlsList="nodownload nofullscreen noremoteplayback"
+          preload="metadata"
+          onError={() => setFailed(true)}
+        />
+      )}
+    </span>
+  );
+}
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+export default function Chatbot() {
+  const [open, setOpen] = useState(false);
+  const [showNudge, setShowNudge] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([initial]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const end = useRef<HTMLDivElement>(null);
+  const field = useRef<HTMLInputElement>(null);
+  const reduced = usePrefersReducedMotion();
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    end.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+  }, [messages, loading, reduced]);
 
   useEffect(() => {
-    if (!isOpen && messages.length > 1) {
-      setHasUnreadMessages(true);
+    if (open) window.setTimeout(() => field.current?.focus(), 100);
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      setShowNudge(false);
+      return;
     }
-  }, [messages, isOpen]);
 
-  const playPingSound = () => {
-    try {
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.volume = 0.3; // Lower volume
-        audioRef.current.play().catch((error) => {
-          console.log('Audio play failed:', error);
-        });
-      }
-    } catch (error) {
-      console.log('Audio error:', error);
-    }
-  };
+    const timer = window.setTimeout(() => setShowNudge(true), 3500);
+    return () => window.clearTimeout(timer);
+  }, [open]);
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+  function openAssistant() {
+    setShowNudge(false);
+    setOpen(true);
+  }
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: inputValue,
-      isUser: true,
-      timestamp: new Date(),
-    };
+  async function send(value = input) {
+    const text = value.trim();
+    if (!text || loading) return;
 
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
-    setIsTyping(true);
+    const user: Message = { id: crypto.randomUUID(), role: "user", text };
+    const next = [...messages, user];
+    setMessages(next);
+    setInput("");
+    setLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: inputValue }),
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: text,
+          history: next.slice(-8).map(({ role, text }) => ({ role, content: text })),
+        }),
       });
-
-      const data = await response.json();
-      
-      // Simulate typing delay
-      setTimeout(() => {
-        const botMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          text: data.reply,
-          isUser: false,
-          timestamp: new Date(),
-        };
-        
-        setMessages(prev => [...prev, botMessage]);
-        setIsTyping(false);
-        playPingSound();
-      }, 1000 + Math.random() * 1000);
-
-    } catch (error) {
-      console.error('Error sending message:', error);
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "Sorry, I'm having trouble connecting right now. Please try again later.",
-        isUser: false,
-        timestamp: new Date(),
-      };
-      
-      setTimeout(() => {
-        setMessages(prev => [...prev, errorMessage]);
-        setIsTyping(false);
-        playPingSound();
-      }, 1000);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Request failed");
+      setMessages((current) => [
+        ...current,
+        { id: crypto.randomUUID(), role: "assistant", text: data.reply || "I couldn't produce a useful answer." },
+      ]);
+    } catch {
+      setMessages((current) => [
+        ...current,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: "The assistant is temporarily unavailable. You can still use the contact form below to reach Mohamad.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const handleSuggestedQuestion = (question: string) => {
-    setInputValue(question);
-    // Auto-send after a brief delay
-    setTimeout(() => {
-      setInputValue(question);
-      // Trigger send after state update
-      setTimeout(() => {
-        const userMessage: Message = {
-          id: Date.now().toString(),
-          text: question,
-          isUser: true,
-          timestamp: new Date(),
-        };
-        setMessages(prev => [...prev, userMessage]);
-        setInputValue('');
-        setIsTyping(true);
-        
-        // Send the message
-        fetch('/api/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message: question }),
-        })
-        .then(response => response.json())
-        .then(data => {
-          setTimeout(() => {
-            const botMessage: Message = {
-              id: (Date.now() + 1).toString(),
-              text: data.reply,
-              isUser: false,
-              timestamp: new Date(),
-            };
-            setMessages(prev => [...prev, botMessage]);
-            setIsTyping(false);
-            playPingSound();
-          }, 1000 + Math.random() * 1000);
-        })
-        .catch(error => {
-          console.error('Error sending message:', error);
-          const errorMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            text: "Sorry, I'm having trouble connecting right now. Please try again later.",
-            isUser: false,
-            timestamp: new Date(),
-          };
-          setTimeout(() => {
-            setMessages(prev => [...prev, errorMessage]);
-            setIsTyping(false);
-            playPingSound();
-          }, 1000);
-        });
-      }, 100);
-    }, 100);
-  };
-
-  const formatMessage = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = text.split(urlRegex);
-    
-    return parts.map((part, index) => {
-      if (part.match(urlRegex)) {
-        return (
-          <a
-            key={index}
-            href={part}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:text-blue-600 underline break-all"
-          >
-            {part}
-          </a>
-        );
-      }
-      return part;
-    });
-  };
+  }
 
   return (
     <>
-      {/* Audio element for ping sound */}
-      <audio ref={audioRef} preload="auto">
-        <source src="/ping.mp3" type="audio/mpeg" />
-        <source src="/ping.wav" type="audio/wav" />
-        <source src="/ping.ogg" type="audio/ogg" />
-      </audio>
+      {!open && (
+        <div className="fixed bottom-6 right-4 z-[80] flex max-w-[calc(100vw-2rem)] flex-col items-end gap-3 sm:bottom-24 sm:right-8">
+          {showNudge && (
+            <div className="relative border border-engineering/25 bg-[#080a1d]/95 px-3.5 py-2.5 text-left shadow-[0_16px_50px_rgba(0,0,0,.42),0_0_28px_rgba(0,212,200,.12)] backdrop-blur-xl">
+              <button
+                type="button"
+                onClick={() => setShowNudge(false)}
+                className="absolute right-1.5 top-1.5 p-1 text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="Dismiss assistant welcome"
+              >
+                <X className="h-3 w-3" />
+              </button>
+              <button type="button" onClick={openAssistant} className="block pr-5 text-left">
+                <span className="block text-sm font-semibold leading-5 text-foreground">
+                  Need a quick brief?
+                </span>
+              </button>
+              <span className="absolute -bottom-2 right-8 h-4 w-4 rotate-45 border-b border-r border-engineering/25 bg-[#080a1d]/95" />
+            </div>
+          )}
+          <button
+            onClick={openAssistant}
+            aria-label="Open portfolio assistant"
+            className="group grid h-20 w-20 place-items-center rounded-full transition-transform hover:-translate-y-0.5 hover:scale-105 sm:h-24 sm:w-24"
+          >
+            <span className="relative grid h-[4.5rem] w-[4.5rem] place-items-center sm:h-[5.5rem] sm:w-[5.5rem]">
+              <ChatbotIcon className="h-[4.5rem] w-[4.5rem] sm:h-[5.5rem] sm:w-[5.5rem]" />
+              <span className="absolute right-1 top-1 h-3 w-3 rounded-full border-2 border-[#080a1d] bg-emerald-400 sm:h-3.5 sm:w-3.5" />
+            </span>
+          </button>
+        </div>
+      )}
 
-      {/* Floating Chat Button */}
-      <button
-        onClick={() => {
-          setIsOpen(true);
-          setHasUnreadMessages(false);
-        }}
-        className={cn(
-          "fixed bottom-6 right-6 z-50 p-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110",
-          "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-        )}
-        aria-label="Open chat"
-      >
-        <MessageCircle className="h-6 w-6" />
-        {hasUnreadMessages && (
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse" />
-        )}
-      </button>
-
-      {/* Chat Modal */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-end p-4 sm:p-6">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setIsOpen(false)} />
-          
-          <div className="relative w-full max-w-md bg-background border border-border rounded-lg shadow-2xl flex flex-col h-[500px] sm:h-[600px]">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-border bg-muted/50">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">AI Assistant</h3>
-                  <p className="text-sm text-muted-foreground">Ask me anything!</p>
-                </div>
+      {open && (
+        <div
+          className="fixed inset-0 z-[60] flex items-end justify-end bg-black/35 p-0 backdrop-blur-[2px] sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Portfolio assistant"
+        >
+          <button className="absolute inset-0 cursor-default" onClick={() => setOpen(false)} aria-label="Close assistant" />
+          <section className="tech-panel relative flex h-[min(720px,92dvh)] w-full flex-col overflow-hidden border border-white/10 bg-[#080a1d]/95 shadow-[0_32px_120px_rgba(0,0,0,.65)] backdrop-blur-2xl sm:max-w-[430px]">
+            <header className="flex items-center gap-3 border-b border-white/[0.08] p-4">
+              <div className="grid h-10 w-10 place-items-center rounded-full border border-engineering/25 bg-engineering/[0.06]">
+                <ChatbotIcon className="h-9 w-9" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">Portfolio assistant</p>
+                <p className="mt-0.5 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-emerald-400">
+                  <i className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Ready to help
+                </p>
               </div>
               <button
-                onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-muted rounded-full transition-colors"
+                onClick={() => setMessages([initial])}
+                className="ml-auto p-2 text-muted-foreground hover:text-engineering"
+                aria-label="Reset conversation"
               >
-                <X className="w-4 h-4" />
+                <RotateCcw className="h-4 w-4" />
               </button>
-            </div>
+              <button
+                onClick={() => setOpen(false)}
+                className="p-2 text-muted-foreground hover:text-foreground"
+                aria-label="Close assistant"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </header>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 space-y-4 overflow-y-auto p-4 sm:p-5" aria-live="polite">
               {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={cn(
-                    "flex",
-                    message.isUser ? "justify-end" : "justify-start"
-                  )}
-                >
+                <div key={message.id} className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}>
                   <div
                     className={cn(
-                      "max-w-[80%] rounded-lg px-3 py-2 text-sm",
-                      message.isUser
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-foreground"
+                      "max-w-[88%] px-3.5 py-3 text-sm leading-6",
+                      message.role === "user"
+                        ? "rounded-2xl rounded-br-sm bg-engineering text-[#061315]"
+                        : "tech-panel border border-white/[0.08] bg-white/[0.035] text-foreground/85",
                     )}
                   >
-                    <div className="whitespace-pre-wrap">
-                      {formatMessage(message.text)}
-                    </div>
-                    <div
-                      className={cn(
-                        "text-xs mt-1",
-                        message.isUser
-                          ? "text-primary-foreground/70"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      {message.timestamp.toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </div>
+                    <p className="whitespace-pre-wrap">{message.text}</p>
                   </div>
                 </div>
               ))}
-              
-              {/* Typing indicator */}
-              {isTyping && (
-                <div className="flex justify-start">
-                  <div className="bg-muted text-foreground rounded-lg px-3 py-2">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" />
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                    </div>
-                  </div>
+              {loading && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Sparkles className="h-3.5 w-3.5 animate-pulse text-engineering" />
+                  <span>Reviewing the portfolio...</span>
                 </div>
               )}
-              
-              <div ref={messagesEndRef} />
+              <div ref={end} />
             </div>
 
-            {/* Suggested Questions */}
             {messages.length === 1 && (
-              <div className="p-4 border-t border-border">
-                <p className="text-sm text-muted-foreground mb-2">Suggested questions:</p>
-                <div className="flex flex-wrap gap-2">
-                  {suggestedQuestions.map((question, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSuggestedQuestion(question)}
-                      className="text-xs bg-muted hover:bg-muted/80 text-foreground px-3 py-1 rounded-full transition-colors"
-                    >
-                      {question}
-                    </button>
-                  ))}
-                </div>
+              <div className="flex gap-2 overflow-x-auto border-t border-white/[0.06] px-4 py-3">
+                {suggestions.map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => send(item)}
+                    className="shrink-0 border border-white/[0.08] bg-white/[0.02] px-3 py-2 text-[10px] text-foreground/70 transition-colors hover:border-engineering/30 hover:text-engineering"
+                  >
+                    {item}
+                  </button>
+                ))}
               </div>
             )}
 
-            {/* Input */}
-            <div className="p-4 border-t border-border">
-              <div className="flex space-x-2">
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                send();
+              }}
+              className="border-t border-white/[0.08] p-4"
+            >
+              <div className="flex items-end gap-2 border border-white/[0.09] bg-white/[0.025] p-2">
                 <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  placeholder="Type your message..."
-                  className="flex-1 px-3 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                  ref={field}
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  maxLength={1000}
+                  placeholder="Ask about the work..."
+                  className="h-10 min-w-0 flex-1 bg-transparent px-2 text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
                 />
                 <button
-                  onClick={handleSendMessage}
-                  disabled={!inputValue.trim()}
-                  className="p-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  type="submit"
+                  disabled={!input.trim() || loading}
+                  className="grid h-10 w-10 shrink-0 place-items-center bg-engineering text-[#061315] transition-opacity disabled:opacity-30"
+                  aria-label="Send message"
                 >
-                  <Send className="w-4 h-4" />
+                  <ArrowUp className="h-4 w-4" />
                 </button>
               </div>
-            </div>
-          </div>
+              <p className="mt-2 text-center font-mono text-[8px] uppercase tracking-[.14em] text-muted-foreground/50">
+                Portfolio context only - no personal data disclosed
+              </p>
+            </form>
+          </section>
         </div>
       )}
     </>
   );
-};
-
-export default Chatbot;
+}

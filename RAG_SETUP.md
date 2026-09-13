@@ -49,7 +49,7 @@ This portfolio now includes a RAG system that provides intelligent, context-awar
 The RAG system can now handle questions like:
 - "What are your technical skills?"
 - "Tell me about your projects"
-- "What's your GitHub profile?"
+- "Which case study best shows your engineering approach?"
 - "How can I contact you?"
 - "What's your work experience?"
 - "What technologies do you use?"

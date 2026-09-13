@@ -8,7 +8,7 @@ Your portfolio chatbot now has an enhanced RAG system that can handle both portf
 ### 1. **Portfolio Questions** (Primary Focus)
 - Technical skills and expertise
 - Projects and work experience
-- GitHub and LinkedIn profiles
+- Public case studies and LinkedIn profile
 - Contact information
 - Professional background
 
@@ -30,7 +30,7 @@ Your portfolio chatbot now has an enhanced RAG system that can handle both portf
 The system automatically detects portfolio-related queries using keywords:
 - `mohamad`, `chalhoub`, `portfolio`
 - `skill`, `project`, `experience`
-- `github`, `linkedin`, `contact`
+- `projects`, `linkedin`, `contact`
 - `technology`, `code`, `developer`
 
 ## 📁 Files Added/Modified
@@ -121,7 +121,7 @@ if (queryLower.includes('your_topic')) {
 1. "What technologies do you use?"
 2. "Tell me about your experience"
 3. "How can I contact you?"
-4. "What's your GitHub?"
+4. "Which case study best shows your engineering approach?"
 
 ### **Test General Questions:**
 1. "What's the weather like?"

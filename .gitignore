@@ -18,9 +18,13 @@ yarn-error.log*
 
 # env files
 .env*
+!.env.local.example
 
 # vercel
 .vercel
+
+# local assistant/editor settings
+.claude/
 
 # typescript
 *.tsbuildinfo
